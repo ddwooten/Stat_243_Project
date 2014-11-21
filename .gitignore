@@ -1,0 +1,15 @@
+*.dat
+*.csv
+*.csv#
+*.pdf
+*.jpg
+*.gif
+*.error
+*.out
+*.swp
+*.png
+*.tiff
+*.tif
+*.*~*
+*.err
+*.webm
