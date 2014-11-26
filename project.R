@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Given a path, read in data as dataframe
 ReadInData <- function (filepath){
   dataframe <- read.table(filepath, header=TRUE)
@@ -49,6 +50,11 @@ must.include <- X.data[1,]
 # So far should have y as vector, cleaned data X as data frame, and a binary vector must.include
 #######
 #######
+=======
+
+
+
+>>>>>>> a25ebec82a27ad4337286361577065103cca00c5
 # suppose have a dataframe of individuals and a vector or list of scores
 
 # function ranks individuals by their score, and return a dataframe of individuals with scores
