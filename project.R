@@ -114,11 +114,11 @@ individuals.dataframe <- IndivMat(must.include, n=length(x))
 
 
 # 5. Regression model and AIC with given Xs and y
-GetScore <- function(x, data, individuals, y.index) {
+GetScore <- function(x, data, individuals.dataframe, y.index) {
   AIC.vec <- c()
   
   for (i in 1:n) {
-    x.index <- which(individuals[i, ]==1)
+    x.index <- which(individuals.dataframe[i, ]==1)
     x.var <- colnames(x)[x.index]
     y.var <- colnames(data1)[y.index]
     
@@ -136,7 +136,7 @@ GetScore <- function(x, data, individuals, y.index) {
   return(AIC.vec)
 }
 
-scores <- GetScore(x=x, data=data1, individuals, y.index)
+scores <- GetScore(x=x, data=data1, individuals.dataframe, y.index)
 
 
 # individuals.daraframe: binary individuals as rows of a dataframe
