@@ -5,48 +5,52 @@
 # generation gap, mutation rate, number of generations
 
 
-# read in the data as a dataframe
-dataframe <- read.table(filepath, header=TRUE)
+# 1. read in the data as a dataframe
+ReadInData <- function (filepath){
+  dataframe <- read.table(filepath, header=TRUE)
+  return(dataframe)
+}
 
-
-
+data1 <- ReadInData(filepath)
 # the must include columns are specified by index
 # if extract y and x the index number might change, and hard to keep track
 # make a function to change the index to a vector of boolean, will be easier to keep track
 
 
-# gives a binary vector of column index of Xs that must be included
-MustInclude <- function(must.include.index=NULL){
+# 2. gives a binary vector of column index of Xs that must be included
+MustInclude <- function(must.include.index, dataframe){
   
   # create a vector of 0 as default value for must.include
-  must.include <- rep(0,length(dataframe))
+  must.include <- rep(0,ncol(dataframe))
   
   # change 0 to 1 at the must include index 
   must.include[must.include.index] <- 1
   
   # bind must.include and original data together, so won't loose track of index 
-  # when extracting y and x from the original dataframe
+  # when extracting y and x from the original dataframe 
   dataframe <- rbind(must.include, dataframe)
   
   # Return a dataframe with 1st row is must.include, types not all integer anymore
   return(dataframe)
 }
 
-dataframe <- MustInclude(must.include.index)
+data2 <- MustInclude(must.include.index, dataframe=data1)
+
 # we will have a dataframe with must.include as the 1st row
 # in the form of 1 and 0's, with 1 indicate the corresponding column has to be included
 
 # View(dataframe)
 
 
-# Given the column index of Y, extract Y
-GetY <- function(column.index.Y){
+# 3. Given the column index of Y, extract Y
+GetY <- function(y.index){
   # we have the 1st row as must.include, that we don't want to be included in y
-  y <- dataframe[-1, column.index.Y]
+  y <- data1[, y.index]
   return(y)
 }
 
-y <- GetY(column.index.Y)
+y <- GetY(y.index)
+
 
 # View(y)
 
@@ -55,26 +59,28 @@ y <- GetY(column.index.Y)
 # if the user did not include a index for x at this point
 # that column will not be considered at all
 ## this is a way for the user to exclude the variables that are not desired
-GetX <- function(column.index.X){
+
+GetX <- function(x.index){
   
   # extract desired columns for x from the dataframe with 1st row as must include
-  X.data <- dataframe[column.index.X]
+  x.data <- data2[x.index]
   
   # clear the row names
-  rownames(X)=NULL
+  rownames(X.data)=NULL
   
   # returns only variables that desired, and 1st to be row must.include
-  return(X.data)
+  return(x.data)
 }
 
 # apply the functon will get a dataframe of x, 1st row must.include
-X.data <- GetX(column.index.X)
+x.data <- GetX(x.index)
 
-# to extract X 
-X <- X.data[-1, ]
+# to extract X
+x <- x.data[-1, ]
 
 # to extract the must.include that will be used in breeding later.
-must.include <- X.data[1,]
+must.include <- x.data[1,]
+
 
 # View(X)
 # View(must.include)
@@ -83,8 +89,55 @@ must.include <- X.data[1,]
 
 ###############
 
-# Lindsey's part to give me a dataframe of individuals named individuals.daraframe,
-# and a vector or list of scores named scores
+
+# 4. Generate size n initial populations.
+
+IndivMat <- function(must.include, n) {
+  matrix <- matrix(0, n, length(x))      # null matrix with n individuals
+  
+  for (i in 1:length(x)) {
+    matrix[, i] <- must.include[1, i]    # fill null matrix with must.include row
+    
+    for (j in 1:n) {
+      if (must.include[1, i]==0) {         # for the not must.include column,
+        matrix[j, i] <- rbinom(1, 1, 1/2)  # fill with random binary number
+      }
+    }
+  }
+  
+  return(matrix)
+}
+
+individuals.dataframe <- IndivMat(must.include, n=length(x))
+# n is basically the number of X(:length(x)), but it can be up to 2n by users.
+
+
+
+# 5. Regression model and AIC with given Xs and y
+GetScore <- function(x, data, individuals, y.index) {
+  AIC.vec <- c()
+  
+  for (i in 1:n) {
+    x.index <- which(individuals[i, ]==1)
+    x.var <- colnames(x)[x.index]
+    y.var <- colnames(data1)[y.index]
+    
+    reg.fmla <- as.formula(paste(y.var, "~", paste(x.var, collapse="+")))
+    linmod <- lm(reg.fmla, data=data1)
+    coef <- summary(linmod)$coefficients[, 1]
+    
+    resid <- summary(linmod)$residuals
+    rss <- sum(resid^2)
+    aic <- nrow(data1)*log(rss/nrow(data1))+2*(length(x.vars)+2)
+    
+    AIC.vec[i] <- aic
+    
+  }
+  return(AIC.vec)
+}
+
+scores <- GetScore(x=x, data=data1, individuals, y.index)
+
 
 # individuals.daraframe: binary individuals as rows of a dataframe
 # scores : score for corresponding row of individuals.daraframe, should be a vector
