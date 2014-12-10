@@ -76,9 +76,6 @@ StartGetInput <- function() {
   return(Input())
 }
 
-#View
-StartGetInput()
-
 # After input(), get user.input as list, wrapper will tell which component to be used for each function
 
 
@@ -505,7 +502,8 @@ FixMustInclude <- function(individuals.dataframe, must.include){
 GetTheBest <- function(best.individuals, greatest.better=F){
   if (greatest.better==T){
     
-    # if higher score is better, high score individuals will be at the bottom, and have larger row index
+    # if higher score is better, high score individuals will be at the bottom
+    #, and have larger row index
     best.individuals <- tail(best.individuals, [order(scores),]]
   }
   else { if (greatest.better==F)
@@ -620,6 +618,9 @@ Wrapper <- function() {
   
   return(report)
 }
+
+test <- function() {
+    test_that('
 
 cat('The Program is Over!\n')
 cat('*******************************************************\n')
