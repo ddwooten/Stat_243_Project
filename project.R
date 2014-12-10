@@ -504,7 +504,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
     
     # if higher score is better, high score individuals will be at the bottom
     #, and have larger row index
-    best.individuals <- tail(best.individuals, [order(scores),]]
+    best.individuals <- tail(best.individuals, [order(scores),])
   }
   else { if (greatest.better==F)
     
