@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#!/usr/bin/Rscript
 
 # step 1. Input function
 
@@ -620,3 +620,6 @@ Wrapper <- function() {
   
   return(report)
 }
+
+cat('The Program is Over!\n')
+cat('*******************************************************\n')
