@@ -1,4 +1,6 @@
 # Load in needed library
+library(foreach)
+library(doParallel)
 library(testthat)
 
 ######## 1) select function
