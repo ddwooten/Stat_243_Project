@@ -81,15 +81,23 @@ test <- function() {
   v5 <- 3 * v1 + rnorm(10)
   v6 <- runif(10,0,10)
   data <- data.frame(v1,v2,v3,v4,v5,v6)
+
 # Here we test the AddMustInclude function
-  cat('The first part\n')
-  print(rbind(b.vec,data))
-  cat('The function output\n')
-  print(AddMustInclude(must.inc,data))
-  cat('Running tests\n')
+
   test_that('Testing AddMustInclude',{
       print(expect_identical(rbind(b.vec,data),AddMustInclude(must.inc,data)))
   })
+
+# Use tested function to generate data for later tests
+
+  data2 <- AddMustInclude(must.inc,data)
+
+# Here we test the GetY function
+
+  test_that('Testing GetY',{
+      print(expect_identical(data[,y.ind],GetY(y.ind,data2)))
+  })
+  
 }
   
 #############################################################
