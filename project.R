@@ -536,6 +536,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   number.of.individuals <- length(individuals.dataframe[,1])
   number.of.variables <- length(individuals.dataframe[1,])
   best.individuals <- CreateTheBest(number.of.variables, number.of.gen)
+  weight.acc <- Weight(number.of.individuals)
   i <- 1
   for (i in 1:(number.of.gen-1){
     # get scores needed for creating new generation
@@ -553,6 +554,8 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
                                     number.of.variables, gen.gap)
     # mutate
     individuals.dataframe <- Mutation(individuals.dataframe, mutation.rate)
+    
+    individuals.dataframe <- FixMustInclude(individuals.dataframe, must.include)
     i <- 1+i
   }
   # after the last generation is evaluated, we only evaluate and find the best one
@@ -562,7 +565,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
-  best.individuals <- KeepTheBest(ranked.individuals,generation)
+  best.individuals <- KeepTheBest(ranked.individuals,number.of.gen)
   best.individual <- GetTheBest(best.individuals, greatest.better)
   return(best.individual)
 }
@@ -613,8 +616,6 @@ select <- function() {
   # calls step 4. generate an initial population of individuals
   individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
   
-  # calls step 6.
-  weight.acc <- Weight(user.inputs[[5]])
   
   # calls step 15 that operates step from 5 to 14
   best.individual <- Loop(X, data1, individuals.dataframe, weight.acc,
