@@ -536,7 +536,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   best.individuals <- CreateTheBest(number.of.variables, number.of.gen)
   weight.acc <- Weight(number.of.individuals)
   i <- 1
-  for (i in 1:(number.of.gen-1){
+  for (i in 1:(number.of.gen-1)){
     # get scores needed for creating new generation
     scores <- GetScore(X, data, individuals.dataframe, y.index)
     # return a vector of scores
