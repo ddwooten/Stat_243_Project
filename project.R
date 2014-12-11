@@ -58,7 +58,14 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
 test <- function() {
 # We define several variables for use in testing
   string <- 'I am a string'
-  b.vec <- c(1,0,1,1,0)
+  b.vec <- c(0,1,0,0,0,0)
+  y.ind <- 1
+  x.ind <- c(2,3,4,5,6)
+  num.indv <- 10
+  g.gap <- 0.1 
+  iter <- 20
+  mut <- 0.1
+  log <- TRUE
   int <- 4
   real <- 4.5
   v1 <- c(0,1,2,3,4,5,6,7,8,9)
@@ -68,15 +75,13 @@ test <- function() {
   v5 <- 3 * v1 + rnorm(10)
   v6 <- runif(10,0,10)
   data <- data.frame(v1,v2,v3,v4,v5,v6)
+
   test_that('Testing AddMustInclude',{
-      print(expect_error(AddMustInclude(
-  
-  
-  
-  
-  
-  
-  
+      print(expect_error(AddMustInclude(,real)))
+      print(expect_error(AddMustInclude(string,data)))
+      print(expect_identical(rbind(b.vec,data),AddMustInclude(b.vec,data)))
+  )}
+}
   
 #############################################################
 # following are steps of creating functions that is needed for select function
