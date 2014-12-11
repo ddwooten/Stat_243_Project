@@ -3,21 +3,11 @@
 
 select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
                    fitness, ascending) {
-  data1 <- data
-  y1 <- y
-  x1 <- x
-  alleles1 <- alleles
-  n1 <- n
-  gen.gap1 <- gen.gap
-  mutation.rate1 <- mutation.rate
-  iteration1 <- iteration
-  fitness1 <- fitness
-  ascending1 <- ascending
   
-  # store all informations in a list to use them
-  user.inputs <- list(Data=data, Y.index=y1, X.index=x1, Must.include.index=alleles1,
-                      Num.of.indiv=n1, Gen.gap=gen.gap1, Mutation.rate=mutation.rate1,
-                      Num.of.iter=iteration1, Fitness=fitness1, Ascending=ascending1)
+  # store all inputs in a list to use them
+  user.inputs <- list(Data=data, Y.index=y, X.index=x, Must.include.index=alleles,
+                      Num.of.indiv=n, Gen.gap=gen.gap, Mutation.rate=mutation.rate,
+                      Num.of.iter=iteration, Fitness=fitness, Ascending=ascending)
   
   # calls step 1. add a binary vector on the top of the dataframe
   data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
@@ -36,7 +26,7 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   
   # calls step 15
   report <- Report(best.individual, X)
-  
+
   return(report)
 }
 
