@@ -488,7 +488,7 @@ Mutation <- function(individuals.dataframe, mutation.rate=1/number.of.individual
 # to make sure must include columns has 1 
 
 FixMustInclude <- function(individuals.dataframe, must.include){
-  individuals.dataframe[1,must.include] <- 1 
+  individuals.dataframe[,must.include==1] <- 1 
   return(individuals.dataframe)
 }
 # individuals.dataframe <- FixMustInclude(individuals.dataframe, must.include)
@@ -503,25 +503,23 @@ FixMustInclude <- function(individuals.dataframe, must.include){
 # suppose have a all fill best.individuals
 
 GetTheBest <- function(best.individuals, greatest.better=F){
+  best.scores <- best.individuals[,1]
+  
   if (greatest.better==T){
     
-<<<<<<< HEAD
     # if higher score is better, high score individuals will be at the bottom, and have larger row index
-=======
-    # if higher score is better, high score individuals will be at the bottom
-    #, and have larger row index
->>>>>>> c4fbc2ea4e178204921f51e1f52348e067d0c2ae
-    best.individuals <- tail(best.individuals, [order(scores),])
+    best.individual <- tail(best.individuals[order(best.scores),],1)
   }
   else { if (greatest.better==F)
     
     # if lower score is better, low score individuals will be at the bottom, and have larger row index
-    best.individuals <- tail(best.individuals, [order(-scores),])
+    best.individual <- tail(best.individuals[order(-best.scores),],1)
     else {
       # report a problem to user if the input is neither T nor F
       stop("Argument greatest.better must be a logical value")
     }
     return(best.individual)
+  }
 }
 
 
@@ -555,6 +553,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
     # mutate
     individuals.dataframe <- Mutation(individuals.dataframe, mutation.rate)
     
+    # fix must include
     individuals.dataframe <- FixMustInclude(individuals.dataframe, must.include)
     i <- 1+i
   }
