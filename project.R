@@ -56,7 +56,20 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
 ######## 2) test function
 
 test <- function() {
-  test_that('')
+# We define several variables for use in testing
+  string <- 'I am a string'
+  b.vec <- c(1,0,1,1,0)
+  int <- 4
+  real <- 4.5
+  v1 <- c(0,1,2,3,4,5,6,7,8,9)
+  v2 <- 2 * v1 + rnorm(10)
+  v3 <- runif(10,0,10)
+  v4 <- runif(10,0,10)
+  v5 <- 3 * v1 + rnorm(10)
+  v6 <- runif(10,0,10)
+  data <- data.frame(v1,v2,v3,v4,v5,v6)
+  test_that('Testing AddMustInclude',{
+      print(expect_error(AddMustInclude(
   
   
   
