@@ -23,6 +23,8 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   
   must.include <- MustInclude(X.data)
   
+  individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
+    
   # calls step 14 that operates step from 4 to 13
   best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]],
                           greatest.better, user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
@@ -240,7 +242,7 @@ GetScore <- function(X, data, individuals.dataframe, y.index) {
     
     # get a column name for X locations that we got, and for y
     x.var <- colnames(X)[x.index]
-    y.var <- colnames(y)
+    y.var <- colnames(data)[y.index]
     
     # make a regression formula by pasting y variable name and x variable names
     reg.fmla <- as.formula(paste(y.var, "~", paste(x.var, collapse="+")))
@@ -337,7 +339,7 @@ Ranking <- function(individuals.daraframe, scores, greatest.better=F){
 ################
 
 
-# step 7. Create the dataframe stores the best individuals
+# step 7. Create the dataframe store the best individuals
 
 # create an empty dataframe to store the best individual of each generation
 # need number of generations : number.of.gen to be the length of the dataframe
