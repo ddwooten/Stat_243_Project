@@ -527,7 +527,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
 # step 15. Loop function that operates step 5~14
 
 Loop <- function(X, data, individuals.dataframe, y.index, greatest.better, 
-                 weight.acc, gen.gap, mutation.rate, num.of.gen){
+                 gen.gap, mutation.rate, num.of.gen){
   # get the number of individuals and number of variables, which will be used frequently later
   number.of.individuals <- length(individuals.dataframe[,1])
   number.of.variables <- length(individuals.dataframe[1,])
@@ -615,7 +615,7 @@ select <- function() {
   
   
   # calls step 15 that operates step from 5 to 14
-  best.individual <- Loop(X, data1, individuals.dataframe, weight.acc,
+  best.individual <- Loop(X, data1, individuals.dataframe,
                           user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
   
   # calls step 16
