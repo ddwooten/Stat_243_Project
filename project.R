@@ -98,7 +98,7 @@ AddMustInclude <- function(must.include.index=NULL, dataframe){
   return(dataframe)
 }
 
-# data2 <- AddMustInclude(must.include.index, dataframe=data1)
+# data2 <- AddMustInclude(must.include.index, dataframe=data)
 # we will have a dataframe with must.include as the 1st row
 # in the form of 1 and 0's, with 1 indicate the corresponding column has to be included
 
@@ -221,13 +221,13 @@ GetScore <- function(X, data, individuals.dataframe, y.index) {
     reg.fmla <- as.formula(paste(y.var, "~", paste(x.var, collapse="+")))
     
     # run the regression model for each individuals, and get each regression coefficients
-    linmod <- lm(reg.fmla, data=data1)
+    linmod <- lm(reg.fmla, data)
     coef <- summary(linmod)$coefficients[, 1]
     
     # get residuals, rss, and aic by using summary of lm
     resid <- summary(linmod)$residuals
     rss <- sum(resid^2)
-    aic <- nrow(data1)*log(rss/nrow(data1))+2*(length(x.vars)+2)
+    aic <- nrow(data)*log(rss/nrow(data))+2*(length(x.vars)+2)
     
     # store each AIC scores in AIC.vec to return each AIC scores
     AIC.vec[i] <- aic
@@ -236,7 +236,7 @@ GetScore <- function(X, data, individuals.dataframe, y.index) {
   return(AIC.vec)
 }
 
-# scores <- GetScore(X=X, data=data1, individuals.dataframe, y.index)
+# scores <- GetScore(X, data, individuals.dataframe, y.index)
 
 # so far, we have AIC scores for each individuals to assess models.
 # we will use this assess function in loop to iterate.
@@ -545,7 +545,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   i <- 1
   for (i in 1:(number.of.gen-1)){
     # get scores needed for creating new generation
-    scores <- GetScore(X, data1, individuals.dataframe, y.index)
+    scores <- GetScore(X, data, individuals.dataframe, y.index)
     # return a vector of scores
     
     # attach score from Assess to individuals from input og Loop, then rank
@@ -567,7 +567,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # after the last generation is evaluated, we only evaluate and find the best one
   
   # get scores needed for creating new generation
-  scores <- GetScore(X, data1, individuals.dataframe, y.index)
+  scores <- GetScore(X, data, individuals.dataframe, y.index)
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
@@ -576,7 +576,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   return(best.individual)
 }
 
-# best.individual <- Loop(X, data1, individuals.dataframe, y.index, greatest.better, 
+# best.individual <- Loop(X, data, individuals.dataframe, y.index, greatest.better, 
 #                         weight.acc, gen.gap, mutation.rate, num.of.gen)
 
 
