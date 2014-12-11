@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+#!/usr/bin/Rscript
 
 # step 1. Input function
 
@@ -76,10 +76,9 @@ StartGetInput <- function() {
   return(Input())
 }
 
-#View
-StartGetInput()
+#View StartGetInput()
 
-# After input(), get user.input as list, wrapper will tell which component to be used for each function
+# After input(), get user.input as list, select function will tell which component to be used for each function
 
 
 ################
@@ -506,7 +505,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
   if (greatest.better==T){
     
     # if higher score is better, high score individuals will be at the bottom, and have larger row index
-    best.individuals <- tail(best.individuals, [order(scores),]]
+    best.individuals <- tail(best.individuals, [order(scores),])
   }
   else { if (greatest.better==F)
     
@@ -585,10 +584,10 @@ Report <- function(best.individual, individuals.dataframe){
 ################
 
 
-# step 17. Wrapper function
-# this function calls all functions(step 1~16) using inputs of users
+# step 17. select function
+# this wrapper function calls all functions(step 1~16) using inputs of users
 
-Wrapper <- function() {
+select <- function() {
   
   # calls step 1 and store informations in a new variable to use them
   user.inputs <- StartGetInput()
@@ -620,3 +619,13 @@ Wrapper <- function() {
   
   return(report)
 }
+
+
+#############################################################
+#Invoke select function to be started from terminal
+
+select()
+
+
+cat("The program has ended!\n")
+cat("******************************************\n")
