@@ -80,7 +80,7 @@ test <- function() {
       print(expect_error(AddMustInclude(,real)))
       print(expect_error(AddMustInclude(string,data)))
       print(expect_identical(rbind(b.vec,data),AddMustInclude(b.vec,data)))
-  )}
+  })
 }
   
 #############################################################
