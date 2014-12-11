@@ -1,3 +1,6 @@
+# Load in needed library
+library(testthat)
+
 ######## 1) select function
 # this function calls all functions(step 1~15) using inputs of users
 
@@ -59,6 +62,7 @@ test <- function() {
 # We define several variables for use in testing
   string <- 'I am a string'
   b.vec <- c(0,1,0,0,0,0)
+  must.inc <- 2 
   y.ind <- 1
   x.ind <- c(2,3,4,5,6)
   num.indv <- 10
@@ -75,11 +79,14 @@ test <- function() {
   v5 <- 3 * v1 + rnorm(10)
   v6 <- runif(10,0,10)
   data <- data.frame(v1,v2,v3,v4,v5,v6)
-
+# Here we test the AddMustInclude function
+  cat('The first part\n')
+  print(rbind(b.vec,data))
+  cat('The function output\n')
+  print(AddMustInclude(must.inc,data))
+  cat('Running tests\n')
   test_that('Testing AddMustInclude',{
-      print(expect_error(AddMustInclude(,real)))
-      print(expect_error(AddMustInclude(string,data)))
-      print(expect_identical(rbind(b.vec,data),AddMustInclude(b.vec,data)))
+      print(expect_identical(rbind(b.vec,data),AddMustInclude(must.inc,data)))
   })
 }
   
