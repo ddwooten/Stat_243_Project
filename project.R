@@ -1,5 +1,3 @@
-#!/usr/bin/Rscript
-
 # step 1. Input function
 
 # 1) make a function that says hello to users
@@ -628,9 +626,8 @@ select <- function() {
 
 
 #############################################################
-#Invoke select function to be started from terminal
 
-select()
+
 
 
 #############################################################
