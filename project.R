@@ -78,7 +78,8 @@ StartGetInput <- function() {
 
 #View StartGetInput()
 
-# After input(), get user.input as list, select function will tell which component to be used for each function
+
+# After input(), get user.input as list, wrapper will tell which component to be used for each function
 
 
 ################
@@ -504,7 +505,12 @@ FixMustInclude <- function(individuals.dataframe, must.include){
 GetTheBest <- function(best.individuals, greatest.better=F){
   if (greatest.better==T){
     
+<<<<<<< HEAD
     # if higher score is better, high score individuals will be at the bottom, and have larger row index
+=======
+    # if higher score is better, high score individuals will be at the bottom
+    #, and have larger row index
+>>>>>>> c4fbc2ea4e178204921f51e1f52348e067d0c2ae
     best.individuals <- tail(best.individuals, [order(scores),])
   }
   else { if (greatest.better==F)
@@ -539,7 +545,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
     # attach score from Assess to individuals from input og Loop, then rank
     ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
     # store the best one in best.individuals
-    best.individuals <- KeepTheBest(ranked.individuals,generation)
+    best.individuals <- KeepTheBest(ranked.individuals,i)
     # get rid of the scores from the ranked individuals
     individuals.dataframe <- ranked.individuals[,-1]
     # create new generation 
@@ -627,5 +633,11 @@ select <- function() {
 select()
 
 
-cat("The program has ended!\n")
-cat("******************************************\n")
+#############################################################
+
+test <- function() {
+    test_that('
+
+cat('The Program is Over!\n')
+cat('*******************************************************\n')
+
