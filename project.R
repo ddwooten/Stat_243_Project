@@ -1,105 +1,92 @@
-# step 1. Input function
+######## 1) select function
+# this function calls all functions(step 1~15) using inputs of users
 
-# 1) make a function that says hello to users
-#I used cat function to start with some messages
-
-Start <- function () {
-  cat("Hello Users! I am a program.", "\n")
-  cat("My task is selecting variables with genetic algorithm in regression.", "\n")
-}
-
-# 2) make a function that gets informations from users
-# In this function, by using readline, get necessary informations from users and store them in a list
-Input <- function() {
+select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
+                   fitness, ascending) {
+  data1 <- data
+  y1 <- y
+  x1 <- x
+  alleles1 <- alleles
+  n1 <- n
+  gen.gap1 <- gen.gap
+  mutation.rate1 <- mutation.rate
+  iteration1 <- iteration
+  fitness1 <- fitness
+  ascending1 <- ascending
   
-  #1 filepath[string]
-  file.path <- quote(path <- readline("Type a filepath of data: "))
-  eval(file.path)
+  # store all informations in a list to use them
+  user.inputs <- list(Data=data, Y.index=y1, X.index=x1, Must.include.index=alleles1,
+                      Num.of.indiv=n1, Gen.gap=gen.gap1, Mutation.rate=mutation.rate1,
+                      Num.of.iter=iteration1, Fitness=fitness1, Ascending=ascending1)
   
-  #2 index of y[int]
-  y.index <- quote(y1 <- readline("Type a column index of y in your data: "))
-  eval(y.index)
-  y2 <- as.integer(unlist(y1))
+  # calls step 1. add a binary vector on the top of the dataframe
+  data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
   
-  #3 indeces of X[vec]
-  x.index <- quote(x1 <- readline("Type column indeces of x in your data (space seperated): "))
-  eval(x.index)
-  x2 <- as.integer(unlist(strsplit(x1, " ")))
+  # calls step 2. extract vector of Y, and dataframe of X, and must.include vector
+  y <- GetY(user.inputs[[2]])
   
-  #4 indeces of must.include[vec]
-  must.include.index <- quote(must1 <- readline("Type column indeces of must include allels (space seperated): "))
-  eval(must.include.index)
-  must2 <- as.integer(unlist(strsplit(must1, " ")))
+  X.data <- XData(user.inputs[[3]])
+  X <- GetX(X.data)
   
-  #5 number of individuals[int]
-  num.of.indiv <- quote(indiv1 <- readline("Type a number of individuals that you want to creat (should be #x to #2x): "))
-  eval(num.of.indiv)
-  indiv2 <- as.integer(unlist(indiv1))
+  must.include <- MustInclude(X.data)
   
-  #6 generation gap[real]
-  gen.gap <- quote(gap1 <- readline("Type a generation gap (from 0 to 1): "))
-  eval(gen.gap)
-  gap2 <- as.numeric(unlist(gap1))
+  # calls step 14 that operates step from 4 to 13
+  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, weight.acc,
+                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
   
-  #7 mutation rate[real]
-  mu.rate <- quote(rate1 <- readline("Type a mutation rate (from 0 to 1): "))
-  eval(mu.rate)
-  rate2 <- as.numeric(unlist(rate1))
+  # calls step 15
+  report <- Report(best.individual, X)
   
-  #8 number of iterations[int]
-  num.of.iter <- quote(iter1 <- readline("Type a number of iterations: "))
-  eval(num.of.iter)
-  iter2 <- as.integer(unlist(iter1))
-  
-  #9 fitness function[string]
-  fitness.function <- quote(model <- readline("Type a name of fitness function that assesses models (default:AIC): "))
-  eval(fitness.function)
-  
-  #10 ascending/descending[boolean]
-  ascending <- quote(ascend1 <- readline("Type 'TRUE' if you want ascending, if not, type 'FALSE': "))
-  eval(ascending)
-  
-  # make a list that includes 10 informations of users
-  user.inputs <- list(Filepath=path, Y.index=y2, X.index=x2, Must.include.index=must2,
-                      Num.of.individuals=indiv2, Generation.gap=gap2, Mutation.rate=rate2,
-                      Num.of.iterations=iter2, Fitness.function=model, Ascending=ascend1)
-  
-  return(user.inputs)
+  return(report)
 }
 
 
-# A final input function that says hello and get infos from users
-StartGetInput <- function() {
-  cat(Start())
-  return(Input())
-}
 
-#View StartGetInput()
+# Usage #
+# select(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
+#        fitness="AIC", ascending = TRUE)
+#
+# Arguments (more explanation needed like help page)#
+# data: a data frame
+# y: an integer of index of y column in data frame
+# x: a vector consisting of indeces of x columns in data frame
+# alleles: a vector consisting of indeces of clumns that must be included for predictors
+# n: an integer. number of individuals. it should be in the range (number of Xs ~ 2 * number of Xs)
+# gen.gap: a real number from 0 to 1. 
+# mutation.rate: a real number from 0 to 1.
+# iteration: an integer. number of iterations.
+# fitness: a function that assesses model. default is "AIC".
+# ascending: logical. if TRUE, ascending.
 
 
-# After input(), get user.input as list, wrapper will tell which component to be used for each function
 
 
+#############################################################
+
+######## 2) test function
+
+test <- function() {
+  test_that('')
+  
+  
+  
+  
+  
+  
+  
+  
+#############################################################
+# following are steps of creating functions that is needed for select function
+  
+  
 ################
-
-
-# step 2. read in the data as a dataframe, and make a dataframe that has a binary row on the top
-
-# filepath should be specified by user
-ReadInData <- function (filepath){
-  dataframe <- read.table(filepath, header=TRUE)
-  return(dataframe)
-}
-
-# data1 <- ReadInData(filepath)
-
-
-
+  
+  
+# step 1. make a dataframe that has a binary row on the top
+  
 # the must include columns are specified by index
 # if extract y and x the index number might change, and hard to keep track
 # make a function to change the index to a vector of boolean, will be easier to keep track
-
-
 
 # Add a binary vector to the top of dataframe, 1 corresponding to must include that column
 # After running this function, Y and unnecessary Xs will be gone
@@ -131,7 +118,7 @@ AddMustInclude <- function(must.include.index=NULL, dataframe){
 ################
 
 
-# step 3. extract vector of Y, and dataframe of X, and must.include vector
+# step 2. extract vector of Y, and dataframe of X, and must.include vector
 
 # Given the column index of Y, extract Y
 GetY <- function(column.index.Y){
@@ -190,7 +177,7 @@ MustInclude <- function(X.data){
 ################
 
 
-# step 4. generate an initial population of individuals
+# step 3. generate an initial population of individuals
 
 IndivMat <- function(must.include, n) {
 
@@ -224,7 +211,7 @@ IndivMat <- function(must.include, n) {
 ################
 
 
-# step 5. Regression model and AIC with given Xs and y
+# step 4. Regression model and AIC with given Xs and y
 
 GetScore <- function(X, data, individuals.dataframe, y.index) {
   
@@ -268,7 +255,7 @@ GetScore <- function(X, data, individuals.dataframe, y.index) {
 ################
 
 
-# step 6. Weight function
+# step 5. Weight function
 # a function to assign weight for each individual, given from the reference PDF
 
 Weight <- function(number.of.individuals){
@@ -288,7 +275,7 @@ Weight <- function(number.of.individuals){
 
 ################
 
-# step 7. Ranking function
+# step 6. Ranking function
 
 # function ranks individuals by their score, and return a dataframe of individuals with scores in the first column
 
@@ -335,7 +322,7 @@ Ranking <- function(individuals.daraframe, scores, greatest.better=F){
 ################
 
 
-# step 8. Create the dataframe stores the best individuals
+# step 7. Create the dataframe stores the best individuals
 
 # create an empty dataframe to store the best individual of each generation
 # need number of generations : number.of.gen to be the length of the dataframe
@@ -384,7 +371,7 @@ KeepTheBest <- function(ranked.individuals,generation){
 ################
 
 
-# step 9. Piar index function
+# step 8. Pair index function
 
 # sample a pair of individuals based on the weight calculated by Weight 
 # sample one index first, keep sampling until get a different index
@@ -412,7 +399,7 @@ PairIndex <- function(number.of.individuals, weight.acc){
 ################
 
 
-# step 10. Cross over function
+# step 9. Cross over function
 # a function to do cross over, takes in the index pair of the parents
 # produce one individual from a pair of parents as a vector
 
@@ -435,7 +422,7 @@ CrossOver <- function(individuals.dataframe, pair.index, number.of.variables){
 ################
 
 
-# step 11. Make a new generation
+# step 10. Make a new generation
 # a function to replace less fit individuals by new individuals created by cross over
 # replace from the top, since top ones are less fit by the Ranking function
 # number of replacement is determined by the generation gap
@@ -472,7 +459,7 @@ NewGen <- function(individuals.dataframe, number.of.individuals, number.of.varia
 ################
 
 
-# step 12. Mutation function
+# step 11. Mutation function
 # a functon to do the mutation after the next generation is created, befor asses and ranking
 # default mutation rate is 1/the number of individuals, from the chapter
 
@@ -507,7 +494,7 @@ Mutation <- function(individuals.dataframe, mutation.rate=1/number.of.individual
 ################
 
 
-# step 13. Fix must.include function
+# step 12. Fix must.include function
 # to make sure must include columns has 1 
 
 FixMustInclude <- function(individuals.dataframe, must.include){
@@ -524,7 +511,7 @@ FixMustInclude <- function(individuals.dataframe, must.include){
 ################
 
 
-# step 14. get best individual
+# step 13. get best individual
 # suppose have a all fill best.individuals
 
 GetTheBest <- function(best.individuals, greatest.better=F){
@@ -551,7 +538,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
 ################
 
 
-# step 15. Loop function that operates step 5~14
+# step 14. Loop function that operates step 4~13
 
 Loop <- function(X, data, individuals.dataframe, y.index, greatest.better, 
                  gen.gap, mutation.rate, num.of.gen){
@@ -568,7 +555,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   i <- 1
   for (i in 1:(number.of.gen-1)){
     # get scores needed for creating new generation
-    scores <- GetScore(X, data, individuals.dataframe, y.index)
+    scores <- GetScore(X, data1, individuals.dataframe, y.index)
     # return a vector of scores
     
     # attach score from Assess to individuals from input og Loop, then rank
@@ -590,7 +577,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # after the last generation is evaluated, we only evaluate and find the best one
   
   # get scores needed for creating new generation
-  scores <- GetScore(X, data, individuals.dataframe, y.index)
+  scores <- GetScore(X, data1, individuals.dataframe, y.index)
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
@@ -606,7 +593,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 ################
 
 
-# step 16. report function
+# step 15. report function
 # then pick the individual with the best score
 # return the column names, and the score
 
@@ -621,57 +608,7 @@ Report <- function(best.individual, X){
   variable.names <- colnames(X)[best.index==1]
   cat("The best model should include", variable.names, ", with fitness score", score)
 }
-## now Loop and Report is ready to be called by Wrapper
+## now Loop and Report is ready to be called by select function
 
 
 ################
-
-
-# step 17. select function
-# this wrapper function calls all functions(step 1~16) using inputs of users
-
-select <- function() {
-  
-  # calls step 1 and store informations in a new variable to use them
-  user.inputs <- StartGetInput()
-  
-  # calls step 2. read the data and add a binary vector on the top of the dataframe
-  data1 <- ReadInData(user.inputs[[1]])
-  data2 <- AddMustInclude(user.inputs[[4]], data1)
-
-  # calls step 3. extract vector of Y, and dataframe of X, and must.include vector
-  y <- GetY(user.inputs[[2]])
-  
-  X.data <- XData(user.inputs[[3]])
-  X <- GetX(X.data)
-  
-  must.include <- MustInclude(X.data)
-  
-  # calls step 4. generate an initial population of individuals
-  individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
-  
-  
-  # calls step 15 that operates step from 5 to 14
-  best.individual <- Loop(X, data1, individuals.dataframe,
-                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
-  
-  # calls step 16
-  report <- Report(best.individual, X)
-  
-  return(report)
-}
-
-
-#############################################################
-
-
-
-
-#############################################################
-
-test <- function() {
-    test_that('
-
-cat('The Program is Over!\n')
-cat('*******************************************************\n')
-
