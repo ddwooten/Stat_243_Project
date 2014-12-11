@@ -279,26 +279,29 @@ Weight <- function(number.of.individuals){
   
   # to get the accumulative weight for sampling
   weight.acc <- cumsum(weight)
+  # weight.acc can be considered as CDF for weight
   return(weight.acc)
 }
 # weight.acc <- Weight(number.of.individuals)
 # weight.acc will be in increasing order, we will need this in sampling for parents
 
-# function ranks individuals by their score, and return a dataframe of individuals with scores
-# to rank individuals by their scores
+
+################
+
+# step 7. Ranking function
+
+# function ranks individuals by their score, and return a dataframe of individuals with scores in the first column
+
+# rank individuals by their scores
 
 # greatest.better : an argument for user to specify if higher score means better fit
 # default greatest.better=F , since default scores are AICs, the less the better
 
 
-################
-
-
-# step 7. Ranking function
-
 Ranking <- function(individuals.daraframe, scores, greatest.better=F){
   
   # combine individuals and their scores into a dataframe, scores match individuals
+  # data.frame(a,b) will bind a to the left of b, if their dimensions match
   individuals.scores.dataframe <- data.frame(scores, individuals.dataframe)
   
   # rank them by their scores
@@ -312,12 +315,13 @@ Ranking <- function(individuals.daraframe, scores, greatest.better=F){
     # if lower score is better, low score individuals will be at the bottom, and have larger row index
     ranked.individuals <- individuals.scores.dataframe[order(-scores),]
     else {
+    
       # report a problem to user if the input is neither T nor F
       stop("Argument greatest.better must be a logical value")
     }
   }
   rownames(ranked.individuals)=NULL
-  # return the scores and individual rank in 
+  # return a dataframe, socores and individuals, ranked
   return(ranked.individuals)
 }
 
@@ -328,20 +332,18 @@ Ranking <- function(individuals.daraframe, scores, greatest.better=F){
 #View(ranked.individuals)
 
 
-# create an empty dataframe to store the best individual of each generation
-# need number of generations : number.of.gen
-
-# number.of.gen=10 # for example
-
-# since we are doing iterative selection, need a generation number
-# generation=1
-# suppose at the 1st generation
-
-
 ################
 
 
-# step 8. Create the best individuals
+# step 8. Create the dataframe stores the best individuals
+
+# create an empty dataframe to store the best individual of each generation
+# need number of generations : number.of.gen to be the length of the dataframe
+
+# number.of.gen=10 # for example
+
+
+
 # default values are NA
 
 CreateTheBest <- function(number.of.variables, number.of.gen){
@@ -352,7 +354,12 @@ CreateTheBest <- function(number.of.variables, number.of.gen){
 
 #View(best.individuals)
 
-# a function to keep track of the best individual of each generation
+# since we are doing iterative selection, need a generation number
+# generation=1
+# suppose at the 1st generation
+
+# this function to keep track of the best individual 
+# by storing the best ones into the dataframe created by CreateTheBest
 KeepTheBest <- function(ranked.individuals,generation){
   i <- generation
   # since the best individual is ranked at the bottom
@@ -361,6 +368,8 @@ KeepTheBest <- function(ranked.individuals,generation){
   best.individuals[i,] <- tail(ranked.individuals, n=1)
   return(best.individuals)
 }
+# each generation, KeepTheBest will replace one row of best.individuals
+# i th row stores the best of generation i
 
 # best.individuals <- KeepTheBest(ranked.individuals,generation)
 
@@ -376,22 +385,28 @@ KeepTheBest <- function(ranked.individuals,generation){
 
 
 # step 9. Piar index function
-# sample a pair of individuals based on the weight calculates ealier
+
+# sample a pair of individuals based on the weight calculated by Weight 
 # sample one index first, keep sampling until get a different index
 
 PairIndex <- function(number.of.individuals, weight.acc){
+  
   # sample a index by sampling from uniform(0,1), see which interval it falls in weight.acc
   # intervals are [0,weight.acc[1]),...,[weight.acc[i-1],weight.acc[i]), ...
   # index will be the coressponding i
   # this is done by taking the first index of which the sample is less than the value in weight.acc
   index.a <- (1:number.of.individuals)[runif(1)<weight.acc][1]
-  # since parents cannot be the same individual
-  # keep sampling until have a different index
+  
+  # since parents cannot be the same individual, but 2 random numbers might fall into the same interval
+  # keep sampling til have a different index
   repeat {index.b <- (1:number.of.individuals)[runif(1)<weight.acc][1]
           if (index.b!=index.a) break}
   # return the index pair as a vecrtor
+  # this is equavalent to given weights, sample a pair of parents , without replacement
   return(c(index.a,index.b))
 }
+
+# pair.index <- PairIndex(number.of.individuals, weight.acc)
 
 
 ################
@@ -402,14 +417,17 @@ PairIndex <- function(number.of.individuals, weight.acc){
 # produce one individual from a pair of parents as a vector
 
 CrossOver <- function(individuals.dataframe, pair.index, number.of.variables){
+
   # assign parents by the index pair
   parent.a <- individuals.dataframe[pair.index[1],]
   parent.b <- individuals.dataframe[pair.index[2],]
+  
   # randomly choose a point to break and crossover
   break.point <- sample(1:(number.of.variables-1),1)
+  
   # new individual will be the 1st half of parent.a and the second half of parent.b
   new.individual <- unlist(c(parent.a[1:break.point],parent.b[(break.point+1):number.of.variables]))
-  # return the new individual as a vectpr
+  # return the new individual as a vector
   return(new.individual)
 }
 
@@ -419,27 +437,31 @@ CrossOver <- function(individuals.dataframe, pair.index, number.of.variables){
 
 # step 11. Make a new generation
 # a function to replace less fit individuals by new individuals created by cross over
-# replace from the top, since top ones are less fit
+# replace from the top, since top ones are less fit by the Ranking function
 # number of replacement is determined by the generation gap
 # a ratio of (to be replaced)/(total number of individuals)
 
 NewGen <- function(individuals.dataframe, number.of.individuals, number.of.variables, gen.gap=1){
-  if (gen.gap>1)
+  if (gen.gap>1 || gen.gap<0)
     # incase generation gap is greater than 1
-    stop("Generation gap : gen.gap cannot exceed 1")
+    stop("Generation gap : gen.gap is a rate between 0 and 1")
   else{
-    # decide the number of individuals to be replaces, default is to replace all
-    # if specify a generation gap, make sure number is integer and at least 1
+    # determine the number of individuals to be replaces, default is to replace all
+    # if specify a generation gap, make sure number of replacement is integer and at least 1
     number.new <- ceiling(gen.gap* number.of.individuals)
+    
     # replace individuals from the top by repeating 
     # the procedure to get a pair of parents and produce an offspring
     for (j in 1:number.new){
+    
       # use the PairIndex to get the parents for a new individual
       pair.index <- PairIndex(number.of.individuals, weight.acc)
+      
       # replace a individual by the offspring from crossover
       # replace the individuals from the top, i.e. replace the least fit ones
       individuals.dataframe[j,] <- CrossOver(individuals.dataframe, pair.index, number.of.variables)
     }
+    # return a nedataframe with top number.new rows new individuals, and other rows unchanged
     return(individuals.dataframe)
   }
 }
@@ -455,18 +477,21 @@ NewGen <- function(individuals.dataframe, number.of.individuals, number.of.varia
 # default mutation rate is 1/the number of individuals, from the chapter
 
 Mutation <- function(individuals.dataframe, mutation.rate=1/number.of.individuals){
-  if (mutation.rate > 1) {
+  if (mutation.rate > 1 || mutation.rate <0 ) {
     # report a problem if mutation rate if greater than 1
-    stop("Mutation rate should be less than 1.")
+    stop("Mutation rate should be less than 1 and greater than 0.")
   }
   else {
     # interger number of individuals to be mutated, make sure at least 1
     mutation.number <- ceiling(number.of.individuals*mutation.rate)
+    
     # random pick index with no replacement, to select individuals to be mutated
     mutate.index <- sample(1:number.of.individuals, mutation.number, replace=F)
+    
     # random pick a place to be mutated of selected individuals, 1 per selected individual
     mutate.location <- sapply(1:mutation.number, FUN=function(x) sample(1:number.of.variables,1))
-    # mutate selected individual(s) 
+    
+    # mutate selected individual(s) , one by one if have multiple
     for (i in 1:mutation.number){
       # for the place need to be mutated, have to change 1 to, 0 and 0 to 1
       # done by subtract 1 and take the absolute value, i.e.
@@ -486,6 +511,8 @@ Mutation <- function(individuals.dataframe, mutation.rate=1/number.of.individual
 # to make sure must include columns has 1 
 
 FixMustInclude <- function(individuals.dataframe, must.include){
+  # change the entire column to 1 where must include has 1
+  # may undo Mutation, but is necessary
   individuals.dataframe[,must.include==1] <- 1 
   return(individuals.dataframe)
 }
@@ -528,10 +555,15 @@ GetTheBest <- function(best.individuals, greatest.better=F){
 
 Loop <- function(X, data, individuals.dataframe, y.index, greatest.better, 
                  gen.gap, mutation.rate, num.of.gen){
+                 
   # get the number of individuals and number of variables, which will be used frequently later
   number.of.individuals <- length(individuals.dataframe[,1])
   number.of.variables <- length(individuals.dataframe[1,])
+  
+  # create the empty dataframe to store best individuals with their score
   best.individuals <- CreateTheBest(number.of.variables, number.of.gen)
+  
+  # calculate CDF for weight
   weight.acc <- Weight(number.of.individuals)
   i <- 1
   for (i in 1:(number.of.gen-1)){
@@ -579,8 +611,13 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 # return the column names, and the score
 
 Report <- function(best.individual, X){
+  # the best.individual will be a vector, with the 1st element score, and rest is the best binary individual
+  # extrack the best binary individual
   best.index <- best.individual[-1]
-  score <- best.individual[1]
+  # extract the score of the best individual
+  score <- unlist(best.individual[1])
+  names(score)=NULL
+  # finde the column name from X where the best binary individual has 1
   variable.names <- colnames(X)[best.index==1]
   cat("The best model should include", variable.names, ", with fitness score", score)
 }
