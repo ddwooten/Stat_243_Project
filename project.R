@@ -578,10 +578,10 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 # then pick the individual with the best score
 # return the column names, and the score
 
-Report <- function(best.individual, individuals.dataframe){
+Report <- function(best.individual, X){
   best.index <- best.individual[-1]
   score <- best.individual[1]
-  variable.names <- colnames(individuals.dataframe)[best.index==1]
+  variable.names <- colnames(X)[best.index==1]
   cat("The best model should include", variable.names, ", with fitness score", score)
 }
 ## now Loop and Report is ready to be called by Wrapper
