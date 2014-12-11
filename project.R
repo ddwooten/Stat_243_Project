@@ -21,8 +21,8 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   must.include <- MustInclude(X.data)
   
   # calls step 14 that operates step from 4 to 13
-  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, weight.acc,
-                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
+  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]],
+                          greatest.better, user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
   
   # calls step 15
   report <- Report(best.individual, X)
@@ -577,7 +577,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 }
 
 # best.individual <- Loop(X, data, individuals.dataframe, y.index, greatest.better, 
-#                         weight.acc, gen.gap, mutation.rate, num.of.gen)
+#                         gen.gap, mutation.rate, num.of.gen)
 
 
 ################
