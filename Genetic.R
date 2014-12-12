@@ -153,8 +153,6 @@ test <- function() {
   name <- c('scores','individuals.dataframe')
   names(compar) <- name
   rownames(compar) = NULL
-  print(compar)
-  print(Ranking(pop,v1,FALSE))
     print(expect_identical(compar,Ranking(pop,v1,FALSE)))
   })
   
@@ -170,7 +168,26 @@ test <- function() {
     print(expect_error(KeepTheBest(c(1,2,3,4,5),2)))
   })
   
-  # Here we test 
+  # Here we test PairIndex
+  test_that('Testing PairIndex',{
+      output <- class(PairIndex(num.indiv,mass))
+      print(expect_identical('integer',output))
+  })
+
+  #Here we test CrossOver
+  test_that('Testing CrossOver',{
+# Create data for testing
+      ind1 <- letters[1:10]
+      ind2 <- seq(1:10)
+      df <- data.frame(matrix(seq(1:20),nrow=2,ncol=10))
+      df[1,] <- t(ind1)
+      df[2,] <- t(ind2)
+      pair <- c(1,2)
+      out <- CrossOver(df,pair,10)
+      print(out)
+      print(expect_output(out[1],'a'))
+      print(expect_output(out[10],'10'))
+  })
 }
 
 #############################################################
