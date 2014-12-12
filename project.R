@@ -381,7 +381,7 @@ Weight <- function(number.of.individuals){
 # default greatest.better=F , since default scores are AICs, the less the better
 
 
-Ranking <- function(individuals.daraframe, scores, greatest.better=F){
+Ranking <- function(individuals.dataframe, scores, greatest.better=F){
   
   # combine individuals and their scores into a dataframe, scores match individuals
   # data.frame(a,b) will bind a to the left of b, if their dimensions match
