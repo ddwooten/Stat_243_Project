@@ -6,11 +6,11 @@ library(testthat)
 ######## 1) select function
 # this function calls all functions(step 1~15) using inputs of users
 
-select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
+select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, iteration,
                    fitness, ascending) {
   
   # store all inputs in a list to use them
-  user.inputs <- list(Data=data, Y.index=y, X.index=x, Must.include.index=alleles,
+  user.inputs <- list(Data=data, Y.index=y.index, X.index=x.index, Must.include.index=alleles,
                       Num.of.indiv=n, Gen.gap=gen.gap, Mutation.rate=mutation.rate,
                       Num.of.iter=iteration, Fitness=fitness, Ascending=as.logical(ascending))
   
@@ -45,10 +45,10 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
 #
 # Arguments (more explanation needed like help page)#
 # data: a data frame
-# y: an integer of index of y column in data frame
+# y: a single integer of index of y column in data frame
 # x: a vector consisting of indeces of x columns in data frame
 # alleles: a vector consisting of indeces of clumns that must be included for predictors
-# n: an integer. number of individuals. it should be in the range (number of Xs ~ 2 * number of Xs)
+# n: a single integer. number of individuals. it should be in the range (number of Xs ~ 2 * number of Xs)
 # gen.gap: a real number from 0 to 1. 
 # mutation.rate: a real number from 0 to 1.
 # iteration: an integer. number of iterations.
@@ -323,7 +323,7 @@ GetScore <- function(X, data, individuals.dataframe, y.index, n) {
     # store each AIC scores in AIC.vec to get each AIC scores
     AIC.vec[i] <- aic  
   }
-  
+  stopCluster(cl)
   # since variable assess is a matrix, make this as a vector for output of this function
   assess.vec <- as.vector(assess)
   
@@ -632,12 +632,12 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   number.of.variables <- length(individuals.dataframe[1,])
   
   # create the empty dataframe to store best individuals with their score
-  best.individuals <- CreateTheBest(number.of.variables, number.of.gen)
+  best.individuals <- CreateTheBest(number.of.variables, num.of.gen)
   
   # calculate CDF for weight
   weight.acc <- Weight(number.of.individuals)
   i <- 1
-  for (i in 1:(number.of.gen-1)){
+  for (i in 1:(num.of.gen-1)){
     # get scores needed for creating new generation
     scores <- GetScore(X, data, individuals.dataframe, y.index, n)
     # return a vector of scores
@@ -665,7 +665,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
-  best.individuals <- KeepTheBest(ranked.individuals,number.of.gen)
+  best.individuals <- KeepTheBest(ranked.individuals,num.of.gen)
   best.individual <- GetTheBest(best.individuals, greatest.better)
   return(best.individual)
 }
