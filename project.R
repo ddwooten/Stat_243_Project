@@ -7,12 +7,12 @@ library(testthat)
 # this function calls all functions(step 1~15) using inputs of users
 
 select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, iteration,
-                   fitness, ascending) {
+                   fitness, descending) {
   
   # store all inputs in a list to use them
   user.inputs <- list(Data=data, Y.index=y.index, X.index=x.index, Must.include.index=alleles,
                       Num.of.indiv=n, Gen.gap=gen.gap, Mutation.rate=mutation.rate,
-                      Num.of.iter=iteration, Fitness=fitness, Ascending=as.logical(ascending))
+                      Num.of.iter=iteration, Fitness=fitness, Descending=as.logical(descending))
   
   # calls step 1. add a binary vector on the top of the dataframe
   data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
@@ -41,7 +41,7 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
 
 # Usage #
 # select(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
-#        fitness="AIC", ascending = TRUE)
+#        fitness="AIC", descending = FALSE)
 #
 # Arguments (more explanation needed like help page)#
 # data: a data frame
@@ -53,7 +53,7 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
 # mutation.rate: a real number from 0 to 1.
 # iteration: an integer. number of iterations.
 # fitness: a function that assesses model. default is "AIC".
-# ascending: logical. if TRUE, ascending.
+# descending: logical. if FALSE, ascending.
 
 
 
