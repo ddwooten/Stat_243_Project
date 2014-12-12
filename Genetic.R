@@ -76,6 +76,7 @@ test <- function() {
   log <- TRUE
   int <- 4
   real <- 4.5
+  pop <- letters[1:10] 
   v1 <- c(0,1,2,3,4,5,6,7,8,9)
   v2 <- 2 * v1 + rnorm(10)
   v3 <- runif(10,0,10)
@@ -146,7 +147,15 @@ test <- function() {
   #Here we test Ranking
   
   test_that('Testing Ranking',{
-    print(expect_error(Ranking(data,mass,FALSE)))
+  # Here we generate some data for testing
+  compar <- data.frame(v1,pop)
+  compar <- compar[order(-v1),]
+  name <- c('scores','individuals.dataframe')
+  names(compar) <- name
+  rownames(compar) = NULL
+  print(compar)
+  print(Ranking(pop,v1,FALSE))
+    print(expect_identical(compar,Ranking(pop,v1,FALSE)))
   })
   
   # Here we test CreateTheBest
