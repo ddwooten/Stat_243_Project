@@ -443,7 +443,7 @@ CreateTheBest <- function(number.of.variables, number.of.gen){
 
 # this function to keep track of the best individual 
 # by storing the best ones into the dataframe created by CreateTheBest
-KeepTheBest <- function(ranked.individuals,generation){
+KeepTheBest <- function(ranked.individuals,generation, best.individuals){
   i <- generation
   # since the best individual is ranked at the bottom
   # take the last individual after ranking and put it in the ith row of best.individuals
