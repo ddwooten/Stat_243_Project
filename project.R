@@ -441,7 +441,7 @@ CreateTheBest <- function(number.of.variables, number.of.gen){
 
 # this function to keep track of the best individual 
 # by storing the best ones into the dataframe created by CreateTheBest
-KeepTheBest <- function(ranked.individuals,generation){
+KeepTheBest <- function(ranked.individuals,generation, best.individuals){
   i <- generation
   # since the best individual is ranked at the bottom
   # take the last individual after ranking and put it in the ith row of best.individuals
@@ -452,7 +452,7 @@ KeepTheBest <- function(ranked.individuals,generation){
 # each generation, KeepTheBest will replace one row of best.individuals
 # i th row stores the best of generation i
 
-# best.individuals <- KeepTheBest(ranked.individuals,generation)
+# best.individuals <- KeepTheBest(ranked.individuals,generation, best.individuals)
 
 #View(best.individuals)
 
@@ -675,7 +675,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
-  best.individuals <- KeepTheBest(ranked.individuals,num.of.gen)
+  best.individuals <- KeepTheBest(ranked.individuals,num.of.gen, best.individuals)
   best.individual <- GetTheBest(best.individuals, greatest.better)
   return(best.individual)
 }
