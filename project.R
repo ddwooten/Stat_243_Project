@@ -32,9 +32,7 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
                           user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]])
   
   # calls step 15
-  report <- Report(best.individual, X)
-
-  return(report)
+  Report(best.individual, X)
 }
 
 
@@ -443,7 +441,7 @@ CreateTheBest <- function(number.of.variables, number.of.gen){
 
 # this function to keep track of the best individual 
 # by storing the best ones into the dataframe created by CreateTheBest
-KeepTheBest <- function(ranked.individuals,generation, best.individuals){
+KeepTheBest <- function(ranked.individuals,generation){
   i <- generation
   # since the best individual is ranked at the bottom
   # take the last individual after ranking and put it in the ith row of best.individuals
