@@ -29,10 +29,12 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
     
   # calls step 14 that operates step from 4 to 13
   best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]], user.inputs[[10]],
-                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]])
+                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]], weight.acc)
   
   # calls step 15
-  Report(best.individual, X)
+  report <- Report(best.individual, X)
+  
+  return(report)
 }
 
 
@@ -522,7 +524,8 @@ CrossOver <- function(individuals.dataframe, pair.index, number.of.variables){
 # number of replacement is determined by the generation gap
 # a ratio of (to be replaced)/(total number of individuals)
 
-NewGen <- function(individuals.dataframe, number.of.individuals, number.of.variables, gen.gap=1){
+NewGen <- function(individuals.dataframe, number.of.individuals, number.of.variables, gen.gap=1,
+                   weight.acc){
   if (gen.gap>1 || gen.gap<0)
     # incase generation gap is greater than 1
     stop("Generation gap : gen.gap is a rate between 0 and 1")
@@ -547,7 +550,7 @@ NewGen <- function(individuals.dataframe, number.of.individuals, number.of.varia
   }
 }
 
-# individuals.dataframe <- NewGen(individuals.dataframe, number.of.individuals, number.of.variables, 1/101)
+# individuals.dataframe <- NewGen(individuals.dataframe, number.of.individuals, number.of.variables, 1/101, weight.acc)
 
 
 ################
@@ -635,7 +638,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
 # step 14. Loop function that operates step 4~13
 
 Loop <- function(X, data, individuals.dataframe, y.index, greatest.better, 
-                 gen.gap, mutation.rate, num.of.gen, n){
+                 gen.gap, mutation.rate, num.of.gen, n, weight.acc){
                  
   # get the number of individuals and number of variables, which will be used frequently later
   number.of.individuals <- length(individuals.dataframe[,1])
@@ -660,7 +663,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
     individuals.dataframe <- ranked.individuals[,-1]
     # create new generation 
     individuals.dataframe <- NewGen(individuals.dataframe, number.of.individuals, 
-                                    number.of.variables, gen.gap)
+                                    number.of.variables, gen.gap, weight.acc)
     # mutate
     individuals.dataframe <- Mutation(individuals.dataframe, mutation.rate)
     
@@ -681,7 +684,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 }
 
 # best.individual <- Loop(X, data, individuals.dataframe, y.index, greatest.better, 
-#                         gen.gap, mutation.rate, num.of.gen, n)
+#                         gen.gap, mutation.rate, num.of.gen, n, weight.acc)
 
 
 ################
