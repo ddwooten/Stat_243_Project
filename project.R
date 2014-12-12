@@ -1,4 +1,6 @@
 # Load in needed library
+library(foreach)
+library(doParallel)
 library(testthat)
 
 ######## 1) select function
@@ -10,7 +12,7 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   # store all inputs in a list to use them
   user.inputs <- list(Data=data, Y.index=y, X.index=x, Must.include.index=alleles,
                       Num.of.indiv=n, Gen.gap=gen.gap, Mutation.rate=mutation.rate,
-                      Num.of.iter=iteration, Fitness=fitness, Ascending=ascending)
+                      Num.of.iter=iteration, Fitness=fitness, Ascending=as.logical(ascending))
   
   # calls step 1. add a binary vector on the top of the dataframe
   data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
@@ -23,9 +25,11 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   
   must.include <- MustInclude(X.data)
   
+  individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
+    
   # calls step 14 that operates step from 4 to 13
-  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]],
-                          greatest.better, user.inputs[[6]], user.inputs[[7]], user.inputs[[8]])
+  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]], user.inputs[[10]],
+                          user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]])
   
   # calls step 15
   report <- Report(best.individual, X)
@@ -248,20 +252,24 @@ IndivMat <- function(must.include, n) {
 
 
 # step 4. Regression model and AIC with given Xs and y
+# "assess" is an object that is stored results of parallelizing fitness function
+# need package: foreach, doParallel
 
-GetScore <- function(X, data, individuals.dataframe, y.index) {
+GetScore <- function(X, data, individuals.dataframe, y.index, n) {
+  # setup parallel backend to use 8 processors
+  cl <- makeCluster(8)
+  registerDoParallel(cl)
   
-  # make a null vector that will be filled and return as an output
+  #make an empty vector to store AIC values
   AIC.vec <- c()
   
-  for (i in 1:n) {
-    
+  assess <- foreach(i=1:n, .combine=rbind) %dopar% {
     # get the locations(column index) of X that individuals.dataframe has 1
     x.index <- which(individuals.dataframe[i, ]==1)
     
     # get a column name for X locations that we got, and for y
     x.var <- colnames(X)[x.index]
-    y.var <- colnames(y)
+    y.var <- colnames(data)[y.index]
     
     # make a regression formula by pasting y variable name and x variable names
     reg.fmla <- as.formula(paste(y.var, "~", paste(x.var, collapse="+")))
@@ -273,16 +281,19 @@ GetScore <- function(X, data, individuals.dataframe, y.index) {
     # get residuals, rss, and aic by using summary of lm
     resid <- summary(linmod)$residuals
     rss <- sum(resid^2)
-    aic <- nrow(data)*log(rss/nrow(data))+2*(length(x.vars)+2)
+    aic <- nrow(data)*log(rss/nrow(data))+2*(length(x.var)+2)
     
-    # store each AIC scores in AIC.vec to return each AIC scores
-    AIC.vec[i] <- aic
-    
+    # store each AIC scores in AIC.vec to get each AIC scores
+    AIC.vec[i] <- aic  
   }
-  return(AIC.vec)
+  
+  # since variable assess is a matrix, make this as a vector for output of this function
+  assess.vec <- as.vector(assess)
+  
+  return(assess.vec)
 }
 
-# scores <- GetScore(X, data, individuals.dataframe, y.index)
+# scores <- GetScore(X, data, individuals.dataframe, y.index, n)
 
 # so far, we have AIC scores for each individuals to assess models.
 # we will use this assess function in loop to iterate.
@@ -358,7 +369,7 @@ Ranking <- function(individuals.daraframe, scores, greatest.better=F){
 ################
 
 
-# step 7. Create the dataframe stores the best individuals
+# step 7. Create the dataframe store the best individuals
 
 # create an empty dataframe to store the best individual of each generation
 # need number of generations : number.of.gen to be the length of the dataframe
@@ -577,7 +588,7 @@ GetTheBest <- function(best.individuals, greatest.better=F){
 # step 14. Loop function that operates step 4~13
 
 Loop <- function(X, data, individuals.dataframe, y.index, greatest.better, 
-                 gen.gap, mutation.rate, num.of.gen){
+                 gen.gap, mutation.rate, num.of.gen, n){
                  
   # get the number of individuals and number of variables, which will be used frequently later
   number.of.individuals <- length(individuals.dataframe[,1])
@@ -591,7 +602,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   i <- 1
   for (i in 1:(number.of.gen-1)){
     # get scores needed for creating new generation
-    scores <- GetScore(X, data, individuals.dataframe, y.index)
+    scores <- GetScore(X, data, individuals.dataframe, y.index, n)
     # return a vector of scores
     
     # attach score from Assess to individuals from input og Loop, then rank
@@ -613,7 +624,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
   # after the last generation is evaluated, we only evaluate and find the best one
   
   # get scores needed for creating new generation
-  scores <- GetScore(X, data, individuals.dataframe, y.index)
+  scores <- GetScore(X, data, individuals.dataframe, y.index, n)
   # attach score then rank 
   ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
   # take the best one store it
@@ -623,7 +634,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
 }
 
 # best.individual <- Loop(X, data, individuals.dataframe, y.index, greatest.better, 
-#                         gen.gap, mutation.rate, num.of.gen)
+#                         gen.gap, mutation.rate, num.of.gen, n)
 
 
 ################
