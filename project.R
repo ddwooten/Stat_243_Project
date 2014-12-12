@@ -657,7 +657,7 @@ Loop <- function(X, data, individuals.dataframe, y.index, greatest.better,
     # attach score from Assess to individuals from input og Loop, then rank
     ranked.individuals <- Ranking(individuals.dataframe, scores, greatest.better)
     # store the best one in best.individuals
-    best.individuals <- KeepTheBest(ranked.individuals,i)
+    best.individuals <- KeepTheBest(ranked.individuals,i, best.individuals)
     # get rid of the scores from the ranked individuals
     individuals.dataframe <- ranked.individuals[,-1]
     # create new generation 
