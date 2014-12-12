@@ -65,7 +65,7 @@ test <- function() {
   must.inc <- 2 
   y.ind <- 1
   x.ind <- c(2,3,4,5,6)
-  num.indv <- 10
+  num.indiv <- 10
   g.gap <- 0.1 
   iter <- 20
   mut <- 0.1
@@ -79,23 +79,36 @@ test <- function() {
   v5 <- 3 * v1 + rnorm(10)
   v6 <- runif(10,0,10)
   data <- data.frame(v1,v2,v3,v4,v5,v6)
-
+  input <- list(data,y.ind,x.ind,b.vec,num.indiv,g.gap,mut,iter,NULL,log)
 # Here we test the AddMustInclude function
 
   test_that('Testing AddMustInclude',{
       print(expect_identical(rbind(b.vec,data),AddMustInclude(must.inc,data)))
   })
 
-# Use tested function to generate data for later tests
-
-  data2 <- AddMustInclude(must.inc,data)
-
 # Here we test the GetY function
+# This doesn't actually test the function GetY
+# as GetY relies, in an incredibly poor show
+# of good programming practices, on environemnt
+# data.
 
   test_that('Testing GetY',{
-      print(expect_identical(data[,y.ind],GetY(y.ind,data2)))
+      print(expect_error(GetY(input[[2]])))
   })
-  
+
+# Here we test XData, again this will throw
+# an error because it relies on environmental
+# data
+
+  test_that('Testing XData',{
+      print(expect_error(XData(input[[3]])))
+  })
+
+# Here we test GetX
+
+ test_that('Testing GetX',{
+     print(expect_identical(data[-1,],GetX(data)))
+ })
 }
   
 #############################################################
