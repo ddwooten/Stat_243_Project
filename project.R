@@ -25,7 +25,7 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
   
   must.include <- MustInclude(X.data)
   
-  individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
+  individuals.dataframe <- IndivMat(must.include, user.inputs[[5]], X)
     
   # calls step 14 that operates step from 4 to 13
   best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]], user.inputs[[10]],
@@ -268,7 +268,7 @@ MustInclude <- function(X.data){
 
 # step 3. generate an initial population of individuals
 
-IndivMat <- function(must.include, n) {
+IndivMat <- function(must.include, n, X) {
 
   # null matrix with n individuals
   matrix <- matrix(0, n, length(X))
@@ -290,7 +290,7 @@ IndivMat <- function(must.include, n) {
   return(matrix)
 }
 
-# individuals.dataframe <- IndivMat(must.include, n)
+# individuals.dataframe <- IndivMat(must.include, n, X)
 
 
 # So we have a vector of individuals that has "mustinclude X" predictors.
