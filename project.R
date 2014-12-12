@@ -149,6 +149,18 @@ test <- function() {
      print(expect_error(Ranking(data,mass,FALSE)))
  })
 
+# Here we test CreateTheBest
+
+ test_that('Testing CreateTheBest',{
+     compar <- data.frame(matrix(NA,nrow=5,ncol=6))
+     print(expect_identical(compar,CreateTheBest(5,5)))
+ })
+
+# Here we test KeepTheBest
+ test_that('Testing KeepTheBest',{
+     print(expect_error(KeepTheBest(c(1,2,3,4,5),2)))
+ })
+
 # Here we test 
 }
   
