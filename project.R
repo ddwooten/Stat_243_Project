@@ -12,7 +12,7 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   # store all inputs in a list to use them
   user.inputs <- list(Data=data, Y.index=y, X.index=x, Must.include.index=alleles,
                       Num.of.indiv=n, Gen.gap=gen.gap, Mutation.rate=mutation.rate,
-                      Num.of.iter=iteration, Fitness=fitness, Ascending=ascending)
+                      Num.of.iter=iteration, Fitness=fitness, Ascending=as.logical(ascending))
   
   # calls step 1. add a binary vector on the top of the dataframe
   data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
@@ -28,7 +28,7 @@ select <- function(data, y, x, alleles, n, gen.gap, mutation.rate, iteration,
   individuals.dataframe <- IndivMat(must.include, user.inputs[[5]])
     
   # calls step 14 that operates step from 4 to 13
-  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]], greatest.better,
+  best.individual <- Loop(X, user.inputs[[1]], individuals.dataframe, user.inputs[[2]], user.inputs[[10]],
                           user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]])
   
   # calls step 15
