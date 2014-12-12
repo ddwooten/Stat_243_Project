@@ -82,7 +82,9 @@ test <- function() {
   v4 <- runif(10,0,10)
   v5 <- 3 * v1 + rnorm(10)
   v6 <- runif(10,0,10)
+  mass <- Weight(num.indiv)
   data <- data.frame(v1,v2,v3,v4,v5,v6)
+  data2 <- AddMustInclude(must.inc,data)
   input <- list(data,y.ind,x.ind,b.vec,num.indiv,g.gap,mut,iter,NULL,log)
 # Here we test the AddMustInclude function
 
@@ -113,6 +115,41 @@ test <- function() {
  test_that('Testing GetX',{
      print(expect_identical(data[-1,],GetX(data)))
  })
+
+# Here we test MustInclude
+
+ test_that('MustInclude',{
+     print(expect_identical(data[1,],MustInclude(data)))
+ })
+
+# Here we test the generation of individuals
+# Again, all we can hope for is an error because
+# the principles of functional programming
+# were not followed.
+
+ test_that('Testing IndivMat',{
+     print(expect_error(IndivMat(data[1,],num.indiv)))
+ })
+
+# Here we test GetScore
+
+ test_that('Testing GetScore',{
+     print(expect_error(GetScore(data,data,data,y.ind)))
+ })
+
+# Here we test Weight
+    
+ test_that('Testing Weight',{
+     print(expect_identical(mass,Weight(num.indiv)))
+ })
+
+#Here we test Ranking
+
+ test_that('Testing Ranking',{
+     print(expect_error(Ranking(data,mass,FALSE)))
+ })
+
+# Here we test 
 }
   
 #############################################################
