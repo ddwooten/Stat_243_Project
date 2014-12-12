@@ -94,21 +94,18 @@ test <- function() {
   })
   
   # Here we test the GetY function
-  # This doesn't actually test the function GetY
-  # as GetY relies, in an incredibly poor show
-  # of good programming practices, on environemnt
-  # data.
   
   test_that('Testing GetY',{
-    print(expect_error(GetY(input[[2]])))
+    print(expect_identical(data[-1,input[[2]]],GetY(input[[2]],data)))
   })
   
-  # Here we test XData, again this will throw
-  # an error because it relies on environmental
-  # data
+  # Here we test XData
   
   test_that('Testing XData',{
-    print(expect_error(XData(input[[3]])))
+#Create data for testing
+      compar <- data[input[[3]]]
+      rownames(compar)=NULL
+    print(expect_identical(compar,XData(input[[3]],data)))
   })
   
   # Here we test GetX
@@ -129,7 +126,8 @@ test <- function() {
   # were not followed.
   
   test_that('Testing IndivMat',{
-    print(expect_error(IndivMat(data[1,],num.indiv)))
+      X <- MustInclude(XData(x.ind,data2))
+    print(expect_identical(100,IndivMat(X,num.indiv,v1)))
   })
   
   # Here we test GetScore
@@ -184,10 +182,21 @@ test <- function() {
       df[2,] <- t(ind2)
       pair <- c(1,2)
       out <- CrossOver(df,pair,10)
-      print(out)
       print(expect_output(out[1],'a'))
       print(expect_output(out[10],'10'))
   })
+
+#Here we test NewGen
+    test_that('Testing NewGen',{
+      #Create some data for testing
+      ind1 <- letters[1:10]
+      ind2 <- seq(1:10)
+      df <- data.frame(matrix(seq(1:20),nrow=2,ncol=10))
+      df[1,] <- t(ind1)
+      df[2,] <- t(ind2)
+      pair <- c(1,2)
+     print( out <- NewGen(df,2,10,0.5,c(0.5,0.5)))
+    })
 }
 
 #############################################################
