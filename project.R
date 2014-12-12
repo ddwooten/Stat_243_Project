@@ -286,7 +286,7 @@ GetScore <- function(X, data, individuals.dataframe, y.index, n) {
     # store each AIC scores in AIC.vec to get each AIC scores
     AIC.vec[i] <- aic  
   }
-  
+  stopCluster(cl)
   # since variable assess is a matrix, make this as a vector for output of this function
   assess.vec <- as.vector(assess)
   
