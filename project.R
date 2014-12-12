@@ -45,10 +45,10 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
 #
 # Arguments (more explanation needed like help page)#
 # data: a data frame
-# y: an integer of index of y column in data frame
+# y: a single integer of index of y column in data frame
 # x: a vector consisting of indeces of x columns in data frame
 # alleles: a vector consisting of indeces of clumns that must be included for predictors
-# n: an integer. number of individuals. it should be in the range (number of Xs ~ 2 * number of Xs)
+# n: a single integer. number of individuals. it should be in the range (number of Xs ~ 2 * number of Xs)
 # gen.gap: a real number from 0 to 1. 
 # mutation.rate: a real number from 0 to 1.
 # iteration: an integer. number of iterations.
