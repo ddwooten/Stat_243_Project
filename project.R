@@ -18,9 +18,9 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
   data2 <- AddMustInclude(user.inputs[[4]], user.inputs[[1]])
   
   # calls step 2. extract vector of Y, and dataframe of X, and must.include vector
-  y <- GetY(user.inputs[[2]])
+  y <- GetY(user.inputs[[2]], data2)
   
-  X.data <- XData(user.inputs[[3]])
+  X.data <- XData(user.inputs[[3]], data2)
   X <- GetX(X.data)
   
   must.include <- MustInclude(X.data)
@@ -161,13 +161,13 @@ AddMustInclude <- function(must.include.index=NULL, dataframe){
 # step 2. extract vector of Y, and dataframe of X, and must.include vector
 
 # Given the column index of Y, extract Y
-GetY <- function(column.index.Y){
+GetY <- function(column.index.Y, data2){
   # we have the 1st row as must.include, that we don't want to be included in y
   y <- data2[-1, column.index.Y]
   return(y)
 }
 
-#y <- GetY(column.index.Y)
+#y <- GetY(column.index.Y, data2)
 
 # View(y)
 
@@ -176,7 +176,7 @@ GetY <- function(column.index.Y){
 # if the user did not include a index for x at this point
 # that column will not be considered at all
 ## this is a way for the user to exclude the variables that are not desired
-XData <- function(column.index.X){
+XData <- function(column.index.X, data2){
   
   # extract desired columns for x from the dataframe with 1st row as must include
   X.data <- data2[column.index.X]
@@ -188,7 +188,7 @@ XData <- function(column.index.X){
   return(X.data)
 }
 # apply the functon will get a dataframe of x, 1st row must.include
-# X.data <- XData(column.index.X)
+# X.data <- XData(column.index.X, data2)
 
 
 # to extract X, extract the X.data without the 1st row
