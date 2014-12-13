@@ -184,20 +184,7 @@ test <- function() {
       print(expect_output(out[10],'10'))
   })
 
-#Here we test NewGen
-    test_that('Testing NewGen',{
-      #Create some data for testing
-      X <- GetX(XData(x.ind,AddMustInclude(b.vec,data)))
-      must.include <- MustInclude(XData(x.ind,data2))
-      indiv <- IndivMat(must.include,num.indiv,X)
-      ind1 <- letters[1:10]
-      ind2 <- seq(1:10)
-      df <- data.frame(matrix(seq(1:20),nrow=2,ncol=10))
-      df[1,] <- t(ind1)
-      df[2,] <- t(ind2)
-      pair <- c(1,2)
-     print( out <- NewGen(df,2,10,0.5,c(0.5,0.5)))
-    })
+   cat('Done with Testing!') 
 }
 
 #############################################################
