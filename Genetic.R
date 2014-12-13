@@ -121,13 +121,11 @@ test <- function() {
   })
   
   # Here we test the generation of individuals
-  # Again, all we can hope for is an error because
-  # the principles of functional programming
-  # were not followed.
   
   test_that('Testing IndivMat',{
-      X <- MustInclude(XData(x.ind,data2))
-    print(expect_identical(100,IndivMat(X,num.indiv,v1)))
+      X <- GetX(XData(x.ind,AddMustInclude(b.vec,data)))
+      must.include <- MustInclude(XData(x.ind,data2))
+    print(expect_equal(50,length(IndivMat(must.include,num.indiv,X))))
   })
   
   # Here we test GetScore
@@ -189,6 +187,9 @@ test <- function() {
 #Here we test NewGen
     test_that('Testing NewGen',{
       #Create some data for testing
+      X <- GetX(XData(x.ind,AddMustInclude(b.vec,data)))
+      must.include <- MustInclude(XData(x.ind,data2))
+      indiv <- IndivMat(must.include,num.indiv,X)
       ind1 <- letters[1:10]
       ind2 <- seq(1:10)
       df <- data.frame(matrix(seq(1:20),nrow=2,ncol=10))
