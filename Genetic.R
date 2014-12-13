@@ -32,9 +32,8 @@ select <- function(data, y.index, x.index, alleles, n, gen.gap, mutation.rate, i
                           user.inputs[[6]], user.inputs[[7]], user.inputs[[8]], user.inputs[[5]], user.inputs[[4]])
   
   # calls step 15
-  report <- Report(best.individual, X)
-  
-  return(report)
+ Report(best.individual, X)
+ 
 }
 
 
